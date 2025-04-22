@@ -6,6 +6,8 @@ from urllib3.exceptions import InsecureRequestWarning
 warnings.filterwarnings("ignore", category=InsecureRequestWarning)
 
 url = "https://www.ideam.gov.co/"
+api_url = "http://0.0.0.0:5000/guardar"
+
 
 try:
     response = requests.get(url, verify=False)
@@ -15,8 +17,14 @@ try:
 
         titles = soup.find_all('h3')
 
+        titles_data = {"titles": []}
+
         for title in titles:
-            print(title.get_text())
+            titles_data["titles"].append(title.get_text())  
+
+        api_response = requests.post(api_url, json=titles_data)
+        print(f"Respuesta de la API: {api_response.json()}")
+
     else:
         print(f"Error al acceder al sitio. Código de estado: {response.status_code}")
 
